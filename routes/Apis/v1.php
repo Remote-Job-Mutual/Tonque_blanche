@@ -22,11 +22,18 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
-    Route::post('login', [AuthenticationController::class, 'login'])->name('api.login');
-    Route::middleware('auth:sanctum')->group(function () {
 
+
+
+
+    Route::prefix('customer')->group(function () {
+        Route::post('login', [AuthenticationController::class, 'login'])->name('api.customer.login');
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.customer.profile');
+            Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api/customer.update-password');
+            Route::post('logout', [AuthenticationController::class, 'logout'])->name('api.customer.logout');
+        });
     });
-
 
 });
 
