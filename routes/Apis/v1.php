@@ -22,10 +22,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
-
-
-
-
     Route::prefix('customer')->group(function () {
         Route::post('login', [AuthenticationController::class, 'login'])->name('api.customer.login');
         Route::middleware('auth:sanctum')->group(function () {

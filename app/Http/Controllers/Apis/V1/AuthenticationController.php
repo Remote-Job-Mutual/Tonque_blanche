@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apis\V1;
 use App\Http\Requests\API\Auth\ForgetPasswordRequest;
+use App\Http\Requests\API\Auth\LoginOtpRequest;
 use App\Http\Requests\API\Auth\LoginRequest;
 use App\Http\Requests\API\Auth\UpdatePasswordRequest;
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\ResponseHelper;
 use App\Models\User;
+use Exception;
 
 
 
@@ -104,8 +106,8 @@ class AuthenticationController extends Controller
     }
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * @param LoginOtpRequest $request
+     *
      */
     public function forgetPasswordOtp(LoginOtpRequest $request)
     {
@@ -125,35 +127,22 @@ class AuthenticationController extends Controller
                         'otp_time' => null
                     ])->save();
 
-                    $response = [
-                        'error' => false,
-                        'message' => 'OTP Verified. Password is updated. Use your new credentials to Login.',
-                        'data' => []
-                    ];
+                    return ResponseHelper::success([], 'OTP Verified. Password is updated. Use your new credentials to Login.');
+
                 } else {
-                    $response = [
-                        'error' => true,
-                        'message' => 'OTP Expired. Please try again.',
-                        'data' => []
-                    ];
+
+                    return ResponseHelper::error('OTP Expired. Please try again.', 500);
                 }
             } else {
-                $response = [
-                    'error' => true,
-                    'message' => 'Invalid OTP. Please try again',
-                    'data' => null
-                ];
+
+                return ResponseHelper::error('Invalid OTP. Please try again', 500);
             }
         } catch (Exception $exception) {
 
-            $response = [
-                'error' => true,
-                'message' => env('APP_DEBUG') ? $exception->getMessage() : 'Something went wrong',
-                'data' => null
-            ];
+            return ResponseHelper::error(env('APP_DEBUG') ? $exception->getMessage() : 'Something went wrong', 500);
         }
 
-        return $response;
+
     }
 
 
