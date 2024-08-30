@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Apis\V1;
 use App\Http\Requests\API\Auth\ForgetPasswordRequest;
 use App\Http\Requests\API\Auth\LoginOtpRequest;
 use App\Http\Requests\API\Auth\LoginRequest;
+use App\Http\Requests\API\Auth\RegisterRequest;
 use App\Http\Requests\API\Auth\UpdatePasswordRequest;
 use Carbon\Carbon;
 use Hash;
@@ -19,16 +20,55 @@ class AuthenticationController extends Controller
 {
 
 
+
+    public function register(RegisterRequest $request)
+    {
+        try {
+            // Create the user
+            $user = User::create([
+                'name' => $request->full_name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'password' => Hash::make($request->password),
+                'address' => $request->address,
+            ]);
+
+            // Automatically log in the user after registration
+            Auth::login($user);
+
+            // Generate access token
+            $accessToken = $user->createToken('authToken')->plainTextToken;
+
+            return ResponseHelper::success([
+                'user' => $user->only(['id', 'name', 'email', 'username', 'phone_number', 'address']),
+                'token' => [
+                    'access_token' => $accessToken,
+                    'token_type' => 'Bearer',
+                ]
+            ], 'Registration successful!');
+
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Registration failed. Please try again.', 500);
+        }
+    }
+
     //Login API
     public function login(LoginRequest $request)
     {
-        if (Auth::attempt(['email' => $request->identity, 'password' => $request->password])) {
+        $credentials = $request->only('identity', 'password');
+
+        if (Auth::attempt(['email' => $credentials['identity'], 'password' => $credentials['password']])) {
             $user = Auth::user();
-            $user->token = [
-                'access_token' => $user->createToken('authToken')->plainTextToken,
-                'token_type' => 'Bearer',
-            ];
-            return ResponseHelper::success(['user' => $user], 'Login successful!');
+            $accessToken = $user->createToken('authToken')->plainTextToken;
+
+            return ResponseHelper::success([
+                'user' => $user->only(['id', 'name', 'email']),
+                'token' => [
+                    'access_token' => $accessToken,
+                    'token_type' => 'Bearer',
+                ]
+            ], 'Login successful!');
         }
 
         return ResponseHelper::error('Invalid credentials', 401);
