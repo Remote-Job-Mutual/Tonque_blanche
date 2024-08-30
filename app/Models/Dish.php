@@ -4,18 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 
-class Product extends Model implements HasMedia
+class Dish extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasTranslations;
+    use HasFactory, SoftDeletes, InteractsWithMedia, HasTranslations;
 
     protected $fillable = [
         'name',
         'description',
         'price',
+        'rating',
+        'distance',
+        'is_suggested',  // New field for Today's Suggestions
+        'is_new',        // New field for New Dishes
+        'is_offer',      // New field for Offers
         'restaurant_id',
         'category_id',
     ];
@@ -32,8 +38,13 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')->singleFile();
+        $this->addMediaCollection('images')->multiple();
     }
 }

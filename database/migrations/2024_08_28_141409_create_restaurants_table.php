@@ -12,9 +12,14 @@ return new class extends Migration {
     {
         Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
+            $table->json('name');
+            $table->json('location')->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->decimal('distance', 5, 2)->nullable();
+            $table->decimal('restaurant_rating', 3, 2)->nullable();
             $table->timestamps();
+            $table->softDeletes(); // Soft delete column
         });
     }
 

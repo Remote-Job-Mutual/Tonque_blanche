@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
-
-class Category extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+class Category extends Model implements HasMedia
 {
-    use HasFactory, HasTranslations;
+    use HasFactory, HasTranslations, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -19,6 +21,12 @@ class Category extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Dish::class);
+    }
+
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')->multiple();
     }
 }

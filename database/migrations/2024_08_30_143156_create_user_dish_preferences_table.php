@@ -10,11 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('user_dish_preferences', function (Blueprint $table) {
             $table->id();
-            $table->json('name');
-            $table->json('description')->nullable();
-            $table->tinyInteger('active')->default(1)->comment('0: inactive, 1: active');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dish_type_id')->constrained('dish_types')->onDelete('cascade');
+            $table->enum('preference', ['love', 'like', 'neutral', 'dislike']); // Preference choices
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('user_dish_preferences');
     }
 };

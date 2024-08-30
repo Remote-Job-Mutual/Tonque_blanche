@@ -10,11 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('user_dish_interactions', function (Blueprint $table) {
             $table->id();
-            $table->json('name');
-            $table->json('description')->nullable();
-            $table->tinyInteger('active')->default(1)->comment('0: inactive, 1: active');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dish_id')->constrained()->onDelete('cascade');
+            $table->boolean('tasted')->default(false);
+            $table->decimal('rating', 3, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('user_dish_interactions');
     }
 };
