@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Apis\V1;
 
+use App\Http\Middleware\SetLocaleForApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,26 +20,27 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
 Route::prefix('v1')->group(function () {
+    Route::prefix('{locale}')->group(function () {
 
-    Route::post('login', [AuthenticationController::class, 'login'])->name('api.login');
-    Route::post('/register', [AuthenticationController::class, 'register'])->name('api.register');
+        Route::post('login', [AuthenticationController::class, 'login'])->name('api.login');
+        Route::post('/register', [AuthenticationController::class, 'register'])->name('api.register');
 
-    //logout for all type auth
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('logout', [AuthenticationController::class, 'logout'])->name('api.logout');
-    });
-
-
-    Route::prefix('customer')->group(function () {
+        //logout for all type auth
         Route::middleware('auth:sanctum')->group(function () {
-            Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.customer.profile');
-            Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api/customer.update-password');
-
+            Route::post('logout', [AuthenticationController::class, 'logout'])->name('api.logout');
         });
-    });
 
+
+        Route::prefix('customer')->group(function () {
+            Route::middleware('auth:sanctum')->group(function () {
+                Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.customer.profile');
+                Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api/customer.update-password');
+
+            });
+        });
+
+
+    })->middleware([SetLocaleForApi::class]);
 });
 
