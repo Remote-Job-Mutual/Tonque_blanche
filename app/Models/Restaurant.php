@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
-
-class Restaurant extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+class Restaurant extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, HasTranslations;
+    use HasFactory, SoftDeletes, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -20,7 +21,7 @@ class Restaurant extends Model
         'restaurant_rating',
     ];
 
-    public $translatable = ['name', 'location'];
+    public $translatable = ['name'];
 
     public function dishes()
     {
@@ -30,5 +31,10 @@ class Restaurant extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
     }
 }

@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,19 +14,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
+
+        Media::all()->each(function ($media) {
+            $media->delete(); // This will also delete the associated files from storage
+        });
+
+        // Optionally, you can clear specific directories in the storage
+        Storage::disk('public')->deleteDirectory('media');
+        //call DishTypeSeeder
+        $this->call(DishTypeSeeder::class);
+        $this->call(RestaurantSeeder::class);
+        $this->call(ServiceSeeder::class);
+        $this->call(TagSeeder::class);
+
+
+        User::truncate();
 
         // Create a customer
         $user = User::factory()->create([
-            'name' => 'Imran Ali',
+            'name' => 'customer',
+            'username' => 'customer',
             'email' => 'customer@example.com',
             'phone_number' => '1234567890',
             'password' => bcrypt('password'),
             'active' => 1,
         ]);
 
-        $user->assignRole('customer');
+        // $user->assignRole('customer');
 
     }
 }

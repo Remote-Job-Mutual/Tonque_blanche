@@ -28,6 +28,8 @@ class DishTypeSeeder extends Seeder
             // Add other dish types similarly
         ];
 
+        DishType::truncate();
+
         foreach ($dishTypes as $type) {
             DishType::create(['name' => $type]);
         }

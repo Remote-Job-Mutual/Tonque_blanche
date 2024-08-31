@@ -16,6 +16,7 @@ class TagSeeder extends Seeder
             // Add more tags as needed
         ];
 
+        Tag::truncate();
         foreach ($tags as $tag) {
             Tag::create(['name' => $tag]);
         }

@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->timestamps();
             $table->tinyInteger('active')->default(1)->comment('0: inactive, 1: active');
             $table->softDeletes();
             $table->timestamps();

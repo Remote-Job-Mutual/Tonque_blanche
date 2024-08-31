@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->json('location')->nullable();
+            $table->text('location')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->decimal('distance', 5, 2)->nullable();
