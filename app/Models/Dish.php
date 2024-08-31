@@ -47,4 +47,15 @@ class Dish extends Model implements HasMedia
     {
         $this->addMediaCollection('images')->multiple();
     }
+
+    public function review()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // In Restaurant.php
+    public function dishes()
+    {
+        return $this->hasMany(Dish::class);
+    }
 }

@@ -17,13 +17,12 @@ class SetLocaleForApi
      */
     public function handle(Request $request, Closure $next)
     {
-        // $locale = \Route::current()->parameter('locale');
-
-        // if (isset(LaravelLocalization::getSupportedLocales()[$locale])) {
-        //     LaravelLocalization::setLocale($locale);
-        // } else {
-        //     LaravelLocalization::setLocale(LaravelLocalization::getDefaultLocale());
-        // }
+        $locale = \Route::current()->parameter('locale');
+        if (isset(LaravelLocalization::getSupportedLocales()[$locale])) {
+            LaravelLocalization::setLocale($locale);
+        } else {
+            LaravelLocalization::setLocale(LaravelLocalization::getDefaultLocale());
+        }
 
         return $next($request);
     }
