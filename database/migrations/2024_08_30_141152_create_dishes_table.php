@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->boolean('is_suggested')->default(false); // New field
             $table->boolean('is_new')->default(false);       // New field
             $table->boolean('is_offer')->default(false);     // New field
-            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('restaurant_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

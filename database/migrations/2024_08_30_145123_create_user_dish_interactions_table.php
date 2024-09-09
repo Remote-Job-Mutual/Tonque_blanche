@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('user_dish_interactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('dish_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('dish_id')->nullable();
             $table->boolean('tasted')->default(false);
             $table->decimal('rating', 3, 2)->nullable();
             $table->softDeletes();

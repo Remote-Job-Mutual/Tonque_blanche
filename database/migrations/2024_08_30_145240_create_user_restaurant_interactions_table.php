@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('user_restaurant_interactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('restaurant_id')->nullable();
             $table->decimal('service_rating', 3, 2)->nullable();
             $table->decimal('cleaning_rating', 3, 2)->nullable();
             $table->decimal('timing_rating', 3, 2)->nullable();

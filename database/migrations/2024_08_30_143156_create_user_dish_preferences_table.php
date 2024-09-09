@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('user_dish_preferences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('dish_type_id')->constrained('dish_types')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('dish_type_id')->nullable();
             $table->enum('preference', ['love', 'like', 'neutral', 'dislike']); // Preference choices
             $table->softDeletes();
             $table->timestamps();
