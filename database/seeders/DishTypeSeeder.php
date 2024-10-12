@@ -11,27 +11,45 @@ class DishTypeSeeder extends Seeder
     {
         $dishTypes = [
             [
-                'en' => 'Arab',
-                'fr' => 'Arabe',
-                'es' => 'Árabe'
+                'name' => ['en' => 'Arab', 'fr' => 'Arabe', 'es' => 'Árabe']
             ],
             [
-                'en' => 'Thai',
-                'fr' => 'Thaï',
-                'es' => 'Tailandés'
+                'name' => ['en' => 'Thai', 'fr' => 'Thaï', 'es' => 'Tailandés']
             ],
             [
-                'en' => 'Mexican',
-                'fr' => 'Mexicain',
-                'es' => 'Mexicano'
+                'name' => ['en' => 'Mexican', 'fr' => 'Mexicain', 'es' => 'Mexicano']
             ],
-            // Add other dish types similarly
+            [
+                'name' => ['en' => 'Peruvian', 'fr' => 'Péruvien', 'es' => 'Peruano']
+            ],
+            [
+                'name' => ['en' => 'Turkish', 'fr' => 'Turc', 'es' => 'Turco']
+            ],
+            [
+                'name' => ['en' => 'Mediterranean', 'fr' => 'Méditerranéen', 'es' => 'Mediterráneo']
+            ],
+            [
+                'name' => ['en' => 'Poke', 'fr' => 'Poke', 'es' => 'Poke']
+            ],
+            [
+                'name' => ['en' => 'Indian', 'fr' => 'Indien', 'es' => 'Indio']
+            ],
+            [
+                'name' => ['en' => 'Italian', 'fr' => 'Italien', 'es' => 'Italiano']
+            ],
+            [
+                'name' => ['en' => 'Japanese', 'fr' => 'Japonais', 'es' => 'Japonés']
+            ],
+            [
+                'name' => ['en' => 'Asian', 'fr' => 'Asiatique', 'es' => 'Asiático']
+            ],
         ];
 
+        // Clear existing data before seeding
         DishType::truncate();
 
         foreach ($dishTypes as $type) {
-            DishType::create(['name' => $type]);
+            DishType::create($type);
         }
     }
 }

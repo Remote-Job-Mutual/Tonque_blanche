@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Apis\V1;
+
 use App\Http\Requests\API\Auth\ForgetPasswordRequest;
 use App\Http\Requests\API\Auth\LoginOtpRequest;
 use App\Http\Requests\API\Auth\LoginRequest;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\ResponseHelper;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 
 
 
@@ -32,6 +34,9 @@ class AuthenticationController extends Controller
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'address' => $request->address,
+                'lat' => $request->lat,
+                'long' => $request->long,
+                'radius' => $request->radius,
             ]);
 
             // Automatically log in the user after registration
@@ -47,14 +52,13 @@ class AuthenticationController extends Controller
                     'token_type' => 'Bearer',
                 ]
             ], 'Registration successful!');
-
         } catch (\Exception $e) {
             return ResponseHelper::error('Registration failed. Please try again.', 500);
         }
     }
 
     //Login API
-    public function login(LoginRequest $request)
+    public function loginWithEmail(LoginRequest $request)
     {
         $credentials = $request->only('identity', 'password');
 
@@ -63,7 +67,27 @@ class AuthenticationController extends Controller
             $accessToken = $user->createToken('authToken')->plainTextToken;
 
             return ResponseHelper::success([
-                'user' => $user->only(['id', 'name', 'email']),
+                'user' => $user->only(['id', 'name', 'email', 'phone_number']),
+                'token' => [
+                    'access_token' => $accessToken,
+                    'token_type' => 'Bearer',
+                ]
+            ], 'Login successful!');
+        }
+
+        return ResponseHelper::error('Invalid credentials', 401);
+    }
+
+    public function loginWithPhone(LoginRequest $request)
+    {
+        $credentials = $request->only('identity', 'password');
+
+        if (Auth::attempt(['phone_number' => $credentials['identity'], 'password' => $credentials['password']])) {
+            $user = Auth::user();
+            $accessToken = $user->createToken('authToken')->plainTextToken;
+
+            return ResponseHelper::success([
+                'user' => $user->only(['id', 'name', 'email', 'phone_number']),
                 'token' => [
                     'access_token' => $accessToken,
                     'token_type' => 'Bearer',
@@ -82,7 +106,6 @@ class AuthenticationController extends Controller
         // $user->avatar_url = $user?->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
         // unset($user->media);
         return ResponseHelper::success(['user' => $user], 'User Profile');
-
     }
 
 
@@ -97,7 +120,6 @@ class AuthenticationController extends Controller
             ])->save();
 
             return ResponseHelper::success(['user' => $currentUser], 'Password Updated Successfully');
-
         }
 
         return ResponseHelper::error('old password is invalid!', 500);
@@ -114,75 +136,113 @@ class AuthenticationController extends Controller
     }
 
 
-
-
-    public function forgetPassword(ForgetPasswordRequest $request)
-    {
-        $user = User::where('phone_number', $request->identity)
-            ->orWhere('email', $request->identity)
-            ->first();
-
-        if ($user) {
-            $otp = random_int(1000, 9999);
-            $user->fill([
-                'otp' => $otp,
-                'otp_time' => Carbon::now()
-            ])->save();
-
-            $otpMessage = "Your One-Time Password (OTP) for the  App Forget password is: " . $otp . ". Please update your password within the next 10 minutes to update your Password.";
-            // $sms->sendSms($user->phone_number, $otpMessage);
-
-            return ResponseHelper::success([
-                'identity' => $request->identity,
-                'otp' => $otp,
-                'otp_time' => $user->otp_time
-            ], 'Forget Password OTP sent to SMS');
-
-
-        }
-
-
-        return ResponseHelper::error('Invalid Credentials', 500);
-    }
     /**
      * Store a newly created resource in storage.
      * @param LoginOtpRequest $request
      *
      */
-    public function forgetPasswordOtp(LoginOtpRequest $request)
+    public function forgetPasswordWithEmail(Request $request)
     {
-        try {
-            $user = User::where('otp', $request->otp)
-                ->where(function ($query) use ($request) {
-                    $query->where('username', '=', $request->identity)
-                        ->orWhere('email', $request->identity);
-                })
-                ->first();
+        $request->validate([
+            'email' => 'required|email'
+        ]);
 
-            if ($user) {
-                if (!is_null($user->otp_time) || Carbon::now()->diffInMinutes($user->otp_time) < config('agriculture.otp_timeout')) {
-                    $user->fill([
-                        'password' => Hash::make($request->password),
-                        'otp' => null,
-                        'otp_time' => null
-                    ])->save();
+        $user = User::where('email', $request->email)->first();
+        $otpExpirationMinutes = (int) env('OTP_EXPIRATION_MINUTES', 10);
+        $otpExpiredAt = Carbon::now()->addMinutes($otpExpirationMinutes); // OTP expiration time
+        if ($user) {
+            $otp = random_int(1000, 9999);
+            $user->fill([
+                'email_code' => $otp,
+                'email_code_expired_at' => $otpExpiredAt
+            ])->save();
 
-                    return ResponseHelper::success([], 'OTP Verified. Password is updated. Use your new credentials to Login.');
+            $otpMessage = "Your OTP for App Forget password is: " . $otp . ". Please update your password within the next " . $otpExpirationMinutes . " minutes.";
 
-                } else {
+            // Implement email logic here. For example:
+            // Mail::to($user->email)->send(new ForgotPasswordOTPEmail($otpMessage));
 
-                    return ResponseHelper::error('OTP Expired. Please try again.', 500);
-                }
-            } else {
+            return ResponseHelper::success([
+                'email' => $request->email,
+                'otp' => $otp,
+                'otp_time' => $user->email_code_expired_at
+            ], 'Forget Password OTP sent to Email');
+        }
 
-                return ResponseHelper::error('Invalid OTP. Please try again', 500);
-            }
-        } catch (Exception $exception) {
+        return ResponseHelper::error('Invalid Email', 500);
+    }
 
-            return ResponseHelper::error(env('APP_DEBUG') ? $exception->getMessage() : 'Something went wrong', 500);
+    public function forgetPasswordWithPhone(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required'
+        ]);
+
+        $user = User::where('phone_number', $request->phone_number)->first();
+        $otpExpirationMinutes = (int) env('OTP_EXPIRATION_MINUTES', 10);
+        $otpExpiredAt = Carbon::now()->addMinutes($otpExpirationMinutes);
+        if ($user) {
+            $otp = random_int(1000, 9999);
+            $user->fill([
+                'sms_code' => $otp,
+                'sms_code_expired_at' =>   $otpExpiredAt
+            ])->save();
+
+            $otpMessage = "Your OTP for App Forget password is: " . $otp . ". Please update your password within the next " . $otpExpirationMinutes . " minutes.";
+
+            // Implement SMS logic here. For example:
+            // $sms->sendSms($user->phone_number, $otpMessage);
+
+            return ResponseHelper::success([
+                'phone_number' => $request->phone_number,
+                'otp' => $otp,
+                'otp_time' => $user->sms_code_expired_at
+            ], 'Forget Password OTP sent to Phone');
+        }
+
+        return ResponseHelper::error('Invalid Phone Number', 500);
+    }
+
+
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'identity' => 'required',
+            'otp' => 'required|integer',
+            'type' => 'required|in:email,phone',
+            'new_password' => 'required|min:6|confirmed'
+        ]);
+
+        $user = null;
+        $otpField = null;
+        $otpExpiredAtField = null;
+
+        if ($request->type === 'email') {
+            $user = User::where('email', $request->identity)->first();
+            $otpField = 'email_code';
+            $otpExpiredAtField = 'email_code_expired_at';
+        } elseif ($request->type === 'phone') {
+            $user = User::where('phone_number', $request->identity)->first();
+            $otpField = 'sms_code';
+            $otpExpiredAtField = 'sms_code_expired_at';
         }
 
 
+
+
+        if ($user && $user->{$otpField} == $request->otp && Carbon::now()->lessThanOrEqualTo($user->{$otpExpiredAtField})) {
+            // OTP is valid and not expired
+            $user->fill([
+                'password' => Hash::make($request->new_password),
+                $otpField => null, // Clear OTP after verification
+                $otpExpiredAtField => null // Clear OTP expiration
+            ])->save();
+
+            return ResponseHelper::success([], 'OTP verified. Password updated successfully.');
+        }
+
+        return ResponseHelper::error('Invalid OTP or OTP expired', 500);
     }
 
 
@@ -237,6 +297,4 @@ class AuthenticationController extends Controller
 
         return $response;
     }
-
-
 }

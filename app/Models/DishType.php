@@ -17,6 +17,6 @@ class DishType extends Model
 
     public function userPreferences()
     {
-        return $this->hasMany(UserDishPreference::class);
+        return $this->hasMany(User::class,'UserDishPreference::class');
     }
 }

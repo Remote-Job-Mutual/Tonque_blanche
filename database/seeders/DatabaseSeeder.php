@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RestaurantSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(TagSeeder::class);
+        $this->call(CategorySeeder::class);
 
 
         User::truncate();

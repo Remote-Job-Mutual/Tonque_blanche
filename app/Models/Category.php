@@ -8,6 +8,7 @@ use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
 class Category extends Model implements HasMedia
 {
     use HasFactory, HasTranslations, SoftDeletes, InteractsWithMedia;
@@ -24,6 +25,10 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Dish::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'preference_category_user');
+    }
 
     public function registerMediaCollections(): void
     {
