@@ -1,0 +1,647 @@
+{
+	"info": {
+		"_postman_id": "2999ca94-c525-4080-885e-e53a58e8014d",
+		"name": "Tonque_blanche",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13567257",
+		"_collection_link": "https://warped-shuttle-413832.postman.co/workspace/OmbudsMan-Collection~9619f5b5-155d-4d02-af1a-024b0f4b5de8/collection/13567257-2999ca94-c525-4080-885e-e53a58e8014d?action=share&source=collection_link&creator=13567257"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "LoginWithEmail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identity\": \"customer@example.com\",\n    \"password\": \"newSecurePassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/login/email",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"login",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgetPasswordByEmail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/forgot-password/email",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"forgot-password",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgetPasswordByPhone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone_number\": \"1234567890\"\n \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/forgot-password/phone",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"forgot-password",
+								"phone"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerifyOtpEmail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identity\": \"customer@example.com\", // or \"1234567890\" for phone number\n  \"otp\": 8242,\n  \"type\": \"email\", // or \"phone\"\n  \"new_password\": \"newSecurePassword\",\n  \"new_password_confirmation\": \"newSecurePassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/forgot-password/verify",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"forgot-password",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerifyOtpPhone Firebase",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identity\": \"customer@example.com\", // or \"1234567890\" for phone number\n  \"otp\": 8242,\n  \"type\": \"email\", // or \"phone\"\n  \"new_password\": \"newSecurePassword\",\n  \"new_password_confirmation\": \"newSecurePassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/forgot-password/verify",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"forgot-password",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginWithPhone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"console.log(\"token is\", pm.response.json()?.data.token?.access_token);\r",
+									"pm.collectionVariables.set(\"authToken\",pm.response.json()?.data.token?.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identity\": \"1234567890\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/login/phone",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"login",
+								"phone"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"password\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/update-password",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"update-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"John Doe\",\n  \"username\": \"johndoee\",\n  \"email\": \"johndoee@example.com\",\n  \"phone_number\": \"1534567810\",\n  \"password\": \"securePassword123\",\n  \"password_confirmation\": \"securePassword123\",\n  \"address\": \"123 Main Street, Springfield, USA\",\n  \"lat\": \"232\",\n  \"long\":\"232\",\n  \"radius\": \"2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/register",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/profile",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/dashboard",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identity\": \"admin\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/logout",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Preferences",
+			"item": [
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n  \"category_ids\": [],\n  \"dish_ids\": [],\n  \"tag_ids\": [1,2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/preferences",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"preferences"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lists",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/preferences",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"preferences"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Screen",
+			"item": [
+				{
+					"name": "Home",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/profile",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Lists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/notification",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"notification"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Firebase Notification",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fcm_token\": \"123232232\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/notification/store",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"notification",
+								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({ ",
+					"    key: \"Accept\",",
+					"    value: \"application/json\",",
+					"});",
+					"",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "http://127.0.0.1:8000/api/{{lang}}/v1",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lang",
+			"value": "en",
+			"type": "string"
+		}
+	]
+}
