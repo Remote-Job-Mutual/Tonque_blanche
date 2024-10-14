@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Apis\V1;
 
-use App\Http\Requests\API\Auth\ForgetPasswordRequest;
-use App\Http\Requests\API\Auth\LoginOtpRequest;
-use App\Http\Requests\API\Auth\LoginRequest;
-use App\Http\Requests\API\Auth\RegisterRequest;
-use App\Http\Requests\API\Auth\UpdatePasswordRequest;
-use Carbon\Carbon;
 use Hash;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Helpers\ResponseHelper;
-use App\Models\User;
 use Exception;
+use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use Illuminate\Routing\Controller;
+use App\Mail\ForgotPasswordOTPEmail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\API\Auth\LoginRequest;
+use App\Http\Requests\API\Auth\LoginOtpRequest;
+use App\Http\Requests\API\Auth\RegisterRequest;
+use App\Http\Requests\API\Auth\ForgetPasswordRequest;
+use App\Http\Requests\API\Auth\UpdatePasswordRequest;
 
 
 
@@ -160,7 +162,7 @@ class AuthenticationController extends Controller
             $otpMessage = "Your OTP for App Forget password is: " . $otp . ". Please update your password within the next " . $otpExpirationMinutes . " minutes.";
 
             // Implement email logic here. For example:
-            // Mail::to($user->email)->send(new ForgotPasswordOTPEmail($otpMessage));
+            Mail::to($user->email)->send(new ForgotPasswordOTPEmail($otpMessage));
 
             return ResponseHelper::success([
                 'email' => $request->email,
