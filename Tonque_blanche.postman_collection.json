@@ -483,34 +483,88 @@
 			"item": [
 				{
 					"name": "Home",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
+					"item": [
+						{
+							"name": "todays-suggestions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/todays-suggestions",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"dishes",
+										"todays-suggestions"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{BaseUrl}}/{{lang}}/customer/profile",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"{{lang}}",
-								"customer",
-								"profile"
-							]
+						{
+							"name": "new-dishes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/new-dishes",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"dishes",
+										"new-dishes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "nearby-dishes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/nearby-dishes",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"dishes",
+										"nearby-dishes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "rated-by-friends",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/rated-by-friends",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"dishes",
+										"rated-by-friends"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			]
 		},

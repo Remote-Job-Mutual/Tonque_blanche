@@ -5,67 +5,117 @@ namespace App\Http\Controllers\Apis\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Dish;
-use Illuminate\Support\Str;
+use App\Services\DishService;
 use App\Helpers\ResponseHelper;
+
 class DishController extends Controller
 {
-    public function home(Request $request)
+    protected $dishService;
+
+    public function __construct(DishService $dishService)
     {
-        $locale = app()->getLocale();
+        $this->dishService = $dishService;
+    }
 
-        // Today's Suggestions
-        $todaysSuggestions = Dish::where('is_suggested', true)
-            ->paginate(10, ['*'], 'todays_suggestions');
+    /**
+     * Get suggested dishes based on the user's preferences.
+     */
+    public function todaysSuggestions(Request $request)
+    {
+        $user = $request->user();
 
-        // New Dishes
-        $newDishes = Dish::where('created_at', '>=', now()->subMonth())
-            ->paginate(10, ['*'], 'new_dishes');
+        // Get user preferences
+        $preferredDishTypes = $user->preferredDishesTypes()
+            ->select('dish_types.id')
+            ->pluck('id')
+            ->toArray();
+        $preferredCategories = $user->preferredCategories()
+            ->select('categories.id')
+            ->pluck('id')
+            ->toArray();
 
-        // Nearby
-        $nearbyDishes = Dish::whereHas('restaurant', function ($query) use ($request) {
-            // Assuming latitude and longitude are passed in request
-            $latitude = $request->input('latitude');
-            $longitude = $request->input('longitude');
-
-            if ($latitude && $longitude) {
-                $query->whereRaw(
-                    "(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) < 10",
-                    [$latitude, $longitude, $latitude]
-                );
-            }
-        })->paginate(10, ['*'], 'nearby_dishes');
-
-        // Rated by Friends
-        $ratedByFriends = Dish::whereHas('review', function ($query) {
-            $query->whereHas('user', function ($query) {
-                // $query->where('is_friend', true);
+        // Build the query for dishes
+        $query = Dish::with('restaurant')
+            ->when(!empty($preferredDishTypes), function ($q) use ($preferredDishTypes) {
+                $q->whereIn('dish_type_id', $preferredDishTypes);
+            })
+            ->when(!empty($preferredCategories), function ($q) use ($preferredCategories) {
+                $q->whereIn('category_id', $preferredCategories);
             });
-        })->paginate(10, ['*'], 'rated_by_friends');
 
+        // Get paginated results
+        $dishes = $query->paginate(10, ['*'], 'todays_suggestions');
+
+        // If no dishes found, get random dishes instead
+        if ($dishes->isEmpty()) {
+            $dishes = Dish::with('restaurant')->inRandomOrder()->paginate(10, ['*'], 'todays_suggestions');
+        }
 
         return ResponseHelper::success([
-            'todays_suggestions' => $this->formatDishes($todaysSuggestions, $locale),
-            'new_dishes' => $this->formatDishes($newDishes, $locale),
-            'nearby_dishes' => $this->formatDishes($nearbyDishes, $locale),
-            'rated_by_friends' => $this->formatDishes($ratedByFriends, $locale),
+            'todays_suggestions' => $this->dishService->formatDishes($dishes)
         ]);
     }
 
 
-    private function formatDishes($dishes, $locale)
+    /**
+     * Get new dishes created within the last month.
+     */
+    public function newDishes(Request $request)
     {
-        return $dishes->map(function ($dish) use ($locale) {
-            return [
-                'name' => $dish->getTranslation('name', $locale),
-                'slug' => Str::slug($dish->getTranslation('name', $locale)),
-                'rating' => $dish->rating,
-                'price' => $dish->price,
-                'restaurant' => [
-                    'name' => $dish->restaurant->getTranslation('name', $locale),
-                    'slug' => Str::slug($dish->restaurant->getTranslation('name', $locale)),
-                ],
-                'image_url' => $dish->getFirstMediaUrl('images'), // Assuming Spatie Media Library
-            ];
-        })->toArray();
+        $dishes = Dish::where('created_at', '>=', now()->subMonth())
+            ->paginate(10, ['*'], 'new_dishes');
+
+        return ResponseHelper::success([
+            'new_dishes' => $this->dishService->formatDishes($dishes)
+        ]);
+    }
+
+    /**
+     * Get dishes from nearby restaurants based on user's location.
+     */
+    public function nearbyDishes(Request $request)
+    {
+        $user = $request->user();
+
+        // Use request coordinates if available, otherwise fall back to user's stored coordinates.
+        $latitude = $request->input('latitude', $user->latitude);
+        $longitude = $request->input('longitude', $user->longitude);
+
+        // Handle the case where both latitude and longitude are missing.
+        if (is_null($latitude) || is_null($longitude)) {
+            return ResponseHelper::success(['nearby_dishes' => []]);
+        }
+
+        // Query dishes with the distance filter applied.
+        $dishes = Dish::whereHas('restaurant', function ($query) use ($latitude, $longitude) {
+            $this->dishService->applyDistanceFilter($query, $latitude, $longitude);
+        })->paginate(10, ['*'], 'nearby_dishes');
+
+        return ResponseHelper::success([
+            'nearby_dishes' => $this->dishService->formatDishes($dishes)
+        ]);
+    }
+
+    /**
+     * Get dishes rated by the user's friends.
+     */
+    public function ratedByFriends(Request $request)
+    {
+        $user = $request->user();
+
+        $dishes = Dish::whereHas('reviews', function ($query) use ($user) {
+            $query->whereHas('user', function ($query) use ($user) {
+                // Adjust the logic to fit your friend system
+                // $query->whereIn('id', function ($subQuery) use ($user) {
+                //     $subQuery->select('friend_id')
+                //         ->from('friends')
+                //         ->where('user_id', $user->id);
+                // });
+            });
+        })->paginate(10, ['*'], 'rated_by_friends');
+
+        return ResponseHelper::success([
+            'rated_by_friends' => $this->dishService->formatDishes($dishes)
+        ]);
     }
 }

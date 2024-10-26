@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
 class Restaurant extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, HasTranslations, InteractsWithMedia;

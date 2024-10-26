@@ -15,13 +15,10 @@ return new class extends Migration {
             $table->json('name');
             $table->json('description')->nullable();
             $table->decimal('price', 8, 2);
-            $table->decimal('rating', 3, 2)->nullable(); // Rating value
-            $table->decimal('distance', 5, 2)->nullable(); // Distance in kilometers
-            $table->boolean('is_suggested')->default(false); // New field
-            $table->boolean('is_new')->default(false);       // New field
-            $table->boolean('is_offer')->default(false);     // New field
+            $table->boolean('is_offer')->default(false);
             $table->foreignId('restaurant_id')->nullable();
             $table->foreignId('category_id')->nullable();
+            $table->foreignId('dish_type_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

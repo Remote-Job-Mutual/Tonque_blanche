@@ -78,7 +78,6 @@ class User extends Authenticatable
      */
     public function preferredDishesTypes()
     {
-
         return $this->belongsToMany(DishType::class, 'user_dish_type_preferences')
             ->withPivot('preference') // Include the preference column
             ->withTimestamps()

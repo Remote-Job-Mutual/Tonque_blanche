@@ -45,22 +45,26 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             //logout for all type auth
             Route::post('logout', [AuthenticationController::class, 'logout'])->name('api.logout');
-
             Route::prefix('customer')->group(function () {
                 Route::prefix('preferences')->group(function () {
                     // Route to show available preferences
                     Route::get('/', [UserPreferenceController::class, 'showPreferences'])->name('api.preferences.show');
-
                     // Route to save user preferences
                     Route::post('/', [UserPreferenceController::class, 'savePreferences'])->name('api.preferences.save');
                 });
 
-                Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.customer.profile');
-                Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api/customer.update-password');
+                // Customer Profile Routes
+                Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.v1.customer.profile');
+                Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api.v1.customer.update-password');
 
 
-                //Screen
-                Route::get('/home', [DishController::class, 'home'])->name('api.customer.home');
+                // Dish-related Routes
+                Route::prefix('dishes')->group(function () {
+                    Route::get('todays-suggestions', [DishController::class, 'todaysSuggestions'])->name('api.v1.customer.dishes.todays-suggestions');
+                    Route::get('new-dishes', [DishController::class, 'newDishes'])->name('api.v1.customer.dishes.new-dishes');
+                    Route::get('nearby-dishes', [DishController::class, 'nearbyDishes'])->name('api.v1.customer.dishes.nearby-dishes');
+                    Route::get('rated-by-friends', [DishController::class, 'ratedByFriends'])->name('api.v1.customer.dishes.rated-by-friends');
+                });
             });
         });
     });
