@@ -27,16 +27,19 @@ class DishSeeder extends Seeder
      */
     private function attachImages($dish)
     {
+
+
         $images = [
-            'https://placehold.co/300x300?text=Dish+Image+1',
-            'https://placehold.co/300x300?text=Dish+Image+2',
-            'https://placehold.co/300x300?text=Dish+Image+3'
+            'https://images.unsplash.com/photo-1517244683847-7456b63c5969?q=80&w=300&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1464093515883-ec948246accb?q=80&w=300&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1542528180-a1208c5169a5?q=80&w=300&auto=format&fit=crop'
         ];
 
         foreach ($images as $image) {
             $dish->addMediaFromUrl($image)->toMediaCollection('images');
         }
     }
+
 
 
     private function clearDishesAndMedia()

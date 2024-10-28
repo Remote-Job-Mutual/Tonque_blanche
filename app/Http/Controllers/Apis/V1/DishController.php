@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Dish;
 use App\Services\DishService;
 use App\Helpers\ResponseHelper;
+use App\Helpers\UserHelper;
+use App\Models\User;
 
 class DishController extends Controller
 {
@@ -22,17 +24,9 @@ class DishController extends Controller
      */
     public function todaysSuggestions(Request $request)
     {
-        $user = $request->user();
-
         // Get user preferences
-        $preferredDishTypes = $user->preferredDishesTypes()
-            ->select('dish_types.id')
-            ->pluck('id')
-            ->toArray();
-        $preferredCategories = $user->preferredCategories()
-            ->select('categories.id')
-            ->pluck('id')
-            ->toArray();
+        $preferredDishTypes = UserHelper::getUserPreferredDishTypes();
+        $preferredCategories = UserHelper::getUserPreferredCategories();
 
         // Build the query for dishes
         $query = Dish::with('restaurant')
@@ -73,23 +67,24 @@ class DishController extends Controller
     /**
      * Get dishes from nearby restaurants based on user's location.
      */
-    public function nearbyDishes(Request $request)
+    public function nearbyDishes()
     {
-        $user = $request->user();
 
-        // Use request coordinates if available, otherwise fall back to user's stored coordinates.
-        $latitude = $request->input('latitude', $user->latitude);
-        $longitude = $request->input('longitude', $user->longitude);
+        [$latitude, $longitude] = UserHelper::getUserCoordinates();
 
-        // Handle the case where both latitude and longitude are missing.
-        if (is_null($latitude) || is_null($longitude)) {
-            return ResponseHelper::success(['nearby_dishes' => []]);
-        }
 
         // Query dishes with the distance filter applied.
         $dishes = Dish::whereHas('restaurant', function ($query) use ($latitude, $longitude) {
             $this->dishService->applyDistanceFilter($query, $latitude, $longitude);
         })->paginate(10, ['*'], 'nearby_dishes');
+
+
+
+        // If no dishes found, get random dishes instead
+        if ($dishes->isEmpty()) {
+            $dishes = Dish::with('restaurant')->inRandomOrder()->paginate(10, ['*'], 'nearby_dishes');
+        }
+
 
         return ResponseHelper::success([
             'nearby_dishes' => $this->dishService->formatDishes($dishes)
@@ -114,6 +109,11 @@ class DishController extends Controller
             });
         })->paginate(10, ['*'], 'rated_by_friends');
 
+
+        // If no dishes found, get random dishes instead
+        if ($dishes->isEmpty()) {
+            $dishes = Dish::with('restaurant')->inRandomOrder()->paginate(10, ['*'], 'rated_by_friends');
+        }
         return ResponseHelper::success([
             'rated_by_friends' => $this->dishService->formatDishes($dishes)
         ]);

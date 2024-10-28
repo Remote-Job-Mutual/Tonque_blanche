@@ -65,6 +65,14 @@ Route::prefix('v1')->group(function () {
                     Route::get('nearby-dishes', [DishController::class, 'nearbyDishes'])->name('api.v1.customer.dishes.nearby-dishes');
                     Route::get('rated-by-friends', [DishController::class, 'ratedByFriends'])->name('api.v1.customer.dishes.rated-by-friends');
                 });
+
+                Route::prefix('restaurants')->group(function () {
+                    // List all restaurants
+                    Route::get('/', [RestaurantController::class, 'index'])->name('api.v1.restaurants.index');
+                    // Post a review
+                    Route::post('/{restaurantId}/review', [UserRestaurantInteractionController::class, 'store'])
+                        ->name('api.v1.restaurants.review.store');
+                });
             });
         });
     });

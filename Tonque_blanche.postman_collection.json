@@ -510,7 +510,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/new-dishes",
+									"raw": "{{BaseUrl}}/{{lang}}/customer/dishes/new-dishes?page=1",
 									"host": [
 										"{{BaseUrl}}"
 									],
@@ -519,6 +519,12 @@
 										"customer",
 										"dishes",
 										"new-dishes"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
 									]
 								}
 							},
@@ -559,6 +565,30 @@
 										"customer",
 										"dishes",
 										"rated-by-friends"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Restaurants",
+					"item": [
+						{
+							"name": "Restaurants",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/restaurants",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"restaurants"
 									]
 								}
 							},

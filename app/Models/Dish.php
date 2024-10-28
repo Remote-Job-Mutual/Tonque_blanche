@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\UserLocationHelper;
+use App\Helpers\GlobalHelper;
+use App\Helpers\UserHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,7 +54,7 @@ class Dish extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')->multiple();
+        $this->addMediaCollection('images');
     }
 
     /**
@@ -85,19 +86,8 @@ class Dish extends Model implements HasMedia
      */
     public function isSuggested()
     {
-        $userDishTypePreferences = auth()->user()->preferredDishesTypes()
-            ->select('dish_types.id')
-            ->pluck('id')
-            ->toArray() ?? [];
-
-        $userCategoryPreferences = auth()->user()->preferredCategories()
-            ->select('categories.id')
-            ->pluck('id')
-            ->toArray() ?? [];
-
-
-        return in_array($this->dish_type_id, $userDishTypePreferences) &&
-            in_array($this->category_id, $userCategoryPreferences);
+        return in_array($this->dish_type_id, UserHelper::getUserPreferredDishTypes()) &&
+            in_array($this->category_id, UserHelper::getUserPreferredCategories());
     }
 
     /**
@@ -109,27 +99,44 @@ class Dish extends Model implements HasMedia
      */
     public function getDistanceAttribute()
     {
-        $restaurant = $this->restaurant;
-
+        $restaurant = optional($this->restaurant); // Handle null safely
+        $unit = GlobalHelper::getDistanceUnit();
         if ($restaurant->latitude && $restaurant->longitude) {
-            return $this->calculateDistance(
+            // Calculate distance using latitude and longitude
+            $distance = $this->calculateDistance(
                 $restaurant->latitude,
                 $restaurant->longitude
             );
+
+            // Get the distance unit (either 'km' or 'miles')
+
+
+            // Convert to miles if necessary
+            if ($unit === 'miles') {
+                $distance *= 0.621371; // Conversion factor: km to miles
+            }
+
+            // Return the distance rounded to 1 decimal point with the unit
+            return round($distance, 1) . " " . $unit;
         }
 
-        return null;
+        return  0 . " " . $unit; // Return null if coordinates are not available
     }
 
     /**
-     * Haversine formula to calculate the distance in kilometers.
+     * Haversine formula to calculate the distance using a custom radius.
      *
-     * @return float
+     * @param float $lat2 Latitude of the destination point.
+     * @param float $lon2 Longitude of the destination point.
+     * @return float Distance in the provided unit (based on custom radius).
      */
     private function calculateDistance($lat2, $lon2)
     {
-        $earthRadius = 6371;
-        [$lat1, $lon1] = UserLocationHelper::getUserCoordinates();
+        [$lat1, $lon1] = UserHelper::getUserCoordinates();
+
+        // Get the custom radius (in kilometers or your preferred unit)
+        $radius = UserHelper::getUserRadius();
+
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
 
@@ -138,6 +145,8 @@ class Dish extends Model implements HasMedia
             sin($dLon / 2) * sin($dLon / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        return $earthRadius * $c;
+
+        // Calculate the distance using the custom radius
+        return $radius * $c;
     }
 }

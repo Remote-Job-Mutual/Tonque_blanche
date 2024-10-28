@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Helpers\UserLocationHelper;
+use App\Helpers\GlobalHelper;
+use App\Helpers\UserHelper;
 
 class DishService
 {
@@ -55,23 +56,13 @@ class DishService
             'is_suggested' => $dish->isSuggested(),
             'distance' => $dish->distance,
             'restaurant' => [
-                'name' => $dish->restaurant->getTranslation('name', app()->getLocale()),
-                'slug' => \Str::slug($dish->restaurant->getTranslation('name', app()->getLocale())),
+                'name' => optional($dish->restaurant)->getTranslation('name', app()->getLocale()) ?? '',
+                'slug' => \Str::slug(optional($dish->restaurant)->getTranslation('name', app()->getLocale())) ?? '',
             ],
-            'image_urls' => $this->getAllImageUrls($dish),
+            'image_urls' => GlobalHelper::getAllImageUrls($dish),
         ];
     }
 
-    /**
-     * Retrieve all image URLs for a dish.
-     *
-     * @param  \App\Models\Dish $dish
-     * @return array
-     */
-    private function getAllImageUrls($dish)
-    {
-        return $dish->getMedia('images')->map(fn($media) => $media->getFullUrl())->toArray();
-    }
 
 
     /**
@@ -86,7 +77,7 @@ class DishService
     private function calculateDistance($lat2, $lon2)
     {
 
-        [$lat1, $lon1] = UserLocationHelper::getUserCoordinates();
+        [$lat1, $lon1] = UserHelper::getUserCoordinates();
 
         if (is_null($lat1) || is_null($lon1) || is_null($lat2) || is_null($lon2)) {
             return 0; // Return null if any coordinate is missing
