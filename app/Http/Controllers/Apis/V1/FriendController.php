@@ -7,9 +7,73 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\ResponseHelper;
+use App\Services\FriendService;
 
 class FriendController extends Controller
 {
+
+    protected $friendService;
+
+    public function __construct(FriendService $friendService)
+    {
+        $this->friendService = $friendService;
+    }
+
+    /**
+     * Get a paginated list of friends for the authenticated user with mapped data.
+     */
+    public function friendList(Request $request)
+    {
+        $user = $request->user();
+        $friends = $user->friends()->wherePivot('status', 'accepted')->paginate(10);
+        $mappedFriends = $this->friendService->mapFriendList($user, $friends);
+
+        return ResponseHelper::success([
+            'friends' => $mappedFriends
+        ], 'Friend list retrieved successfully.');
+    }
+
+    /**
+     * Get a paginated list of followers for the authenticated user with mapped data.
+     */
+    public function followerList(Request $request)
+    {
+        $user = $request->user();
+        $followers = $user->followers()->paginate(10);
+        $mappedFollowers = $this->friendService->mapFollowerList($user, $followers);
+
+        return ResponseHelper::success([
+            'followers' => $mappedFollowers
+        ], 'Follower list retrieved successfully.');
+    }
+
+    /**
+     * Get a paginated list of all users.
+     */
+    public function userList(Request $request)
+    {
+        $users = User::paginate(10, ['id', 'name', 'username', 'email']);
+        $mappedUsers = $this->friendService->mapUserList($users);
+
+        return ResponseHelper::success([
+            'users' => $mappedUsers
+        ], 'User list retrieved successfully.');
+    }
+
+    /**
+     * Get a paginated list of pending friend requests for the authenticated user.
+     */
+    public function pendingFriendList(Request $request)
+    {
+        $user = $request->user();
+        $pendingFriends = $user->friends()->wherePivot('status', 'pending')->paginate(10);
+        $mappedPendingFriends = $this->friendService->mapPendingFriendList($user, $pendingFriends);
+
+        return ResponseHelper::success([
+            'pending_friends' => $mappedPendingFriends
+        ], 'Pending friend list retrieved successfully.');
+    }
+
     /**
      * Send a friend request to another user.
      */

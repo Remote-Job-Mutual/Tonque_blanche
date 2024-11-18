@@ -87,12 +87,17 @@ Route::prefix('v1')->group(function () {
 
 
                 Route::prefix('friends')->group(function () {
+                    Route::get('/', [FriendController::class, 'friendList'])->name('api.v1.friends.list');
+                    Route::get('/suggest', [FriendController::class, 'userList'])->name('api.v1.friends.suggest');
+                    Route::get('/pending-list', [FriendController::class, 'pendingFriendList'])->name('api.v1.friends.pending-list');
+
                     Route::post('send-request', [FriendController::class, 'sendFriendRequest'])->name('api.v1.friends.send-request');
                     Route::post('accept-request', [FriendController::class, 'acceptFriendRequest'])->name('api.v1.friends.accept-request');
                     Route::post('unfriend', [FriendController::class, 'unfriendUser'])->name('api.v1.friends.unfriend');
                 });
 
                 Route::prefix('follow')->group(function () {
+                    Route::get('/follower-list', [FriendController::class, 'followerList'])->name('api.v1.follow.follower-list');
                     Route::post('follow', [FriendController::class, 'followUser'])->name('api.v1.follow.follow-user');
                     Route::post('unfollow', [FriendController::class, 'unfollowUser'])->name('api.v1.follow.unfollow-user');
                 });
