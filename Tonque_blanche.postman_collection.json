@@ -708,6 +708,90 @@
 			"name": "Friends and Followers",
 			"item": [
 				{
+					"name": "List",
+					"item": [
+						{
+							"name": "suggest",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/friends/suggest",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"friends",
+										"suggest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Friendlist",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/friends",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"friends"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "pending-list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/friends/pending-list",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"friends",
+										"pending-list"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "follower-list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{lang}}/customer/follow/follower-list",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{lang}}",
+										"customer",
+										"follow",
+										"follower-list"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Send Friend Request",
 					"request": {
 						"method": "POST",
