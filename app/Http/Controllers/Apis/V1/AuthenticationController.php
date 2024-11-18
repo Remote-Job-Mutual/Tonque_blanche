@@ -17,6 +17,7 @@ use App\Http\Requests\API\Auth\LoginOtpRequest;
 use App\Http\Requests\API\Auth\RegisterRequest;
 use App\Http\Requests\API\Auth\ForgetPasswordRequest;
 use App\Http\Requests\API\Auth\UpdatePasswordRequest;
+use App\Http\Requests\Api\Auth\UpdateUserInfoRequest;
 
 
 
@@ -110,6 +111,30 @@ class AuthenticationController extends Controller
         return ResponseHelper::success(['user' => $user], 'User Profile');
     }
 
+
+
+    public function show()
+    {
+        $user = Auth::user();
+        return response()->json([
+            'account_name' => $user->name,
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'date_of_birth' => $user->date_of_birth,
+            'address' => $user->address,
+            'phone_number' => $user->phone_number,
+            'password' => '********', // Masked for security
+            'creation_date' => $user->created_at->format('d-m-Y'),
+        ]);
+    }
+
+    // Update user personal information
+    public function update(UpdateUserInfoRequest $request)
+    {
+        $user = Auth::user();
+        $user->update($request->validated());
+        return ResponseHelper::success(['user' => $user], 'User information updated successfully');
+    }
 
 
     public function updatePassword(UpdatePasswordRequest $request)

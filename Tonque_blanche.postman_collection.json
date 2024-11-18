@@ -32,7 +32,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"identity\": \"customer@example.com\",\n    \"password\": \"newSecurePassword\"\n}",
+							"raw": "{\n    \"identity\": \"johndo3ee@example.com\",\n    \"password\": \"securePassword123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -303,7 +303,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"full_name\": \"John Doe\",\n  \"username\": \"johndoee\",\n  \"email\": \"johndoee@example.com\",\n  \"phone_number\": \"1534567810\",\n  \"password\": \"securePassword123\",\n  \"password_confirmation\": \"securePassword123\",\n  \"address\": \"123 Main Street, Springfield, USA\",\n  \"lat\": \"232\",\n  \"long\":\"232\",\n  \"radius\": \"2\"\n}",
+							"raw": "{\n  \"full_name\": \"John Doe\",\n  \"username\": \"john3doee\",\n  \"email\": \"johndo3ee@example.com\",\n  \"phone_number\": \"1234567810\",\n  \"password\": \"securePassword123\",\n  \"password_confirmation\": \"securePassword123\",\n  \"address\": \"123 Main Street, Springfield, USA\",\n  \"lat\": \"232\",\n  \"long\":\"232\",\n  \"radius\": \"2\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -349,6 +349,35 @@
 								"{{lang}}",
 								"customer",
 								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"date_of_birth\": \"1990-05-15\",\r\n    \"address\": \"123 Main Street, Springfield\",\r\n    \"phone_number\": \"+1234567890\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/profile/update",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"profile",
+								"update"
 							]
 						}
 					},
@@ -668,6 +697,156 @@
 							"path": [
 								"notification",
 								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Friends and Followers",
+			"item": [
+				{
+					"name": "Send Friend Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"friend_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/friends/send-request",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"friends",
+								"send-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"followed_user_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/follow/follow",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"follow",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfollow",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"followed_user_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/follow/unfollow",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"follow",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accept-request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"friend_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/friends/accept-request",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"friends",
+								"accept-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfriend",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"friend_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{lang}}/customer/friends/unfriend",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{lang}}",
+								"customer",
+								"friends",
+								"unfriend"
 							]
 						}
 					},

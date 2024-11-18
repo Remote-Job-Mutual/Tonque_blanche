@@ -35,6 +35,7 @@ class User extends Authenticatable
         'sms_code_expired_at',
         'email_code',
         'email_code_expired_at',
+        'date_of_birth'
     ];
 
     /**
@@ -93,5 +94,20 @@ class User extends Authenticatable
     public function preferredTags()
     {
         return $this->belongsToMany(Tag::class, 'user_tag_preferences');
+    }
+
+
+    // Relationships for friends and followers
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+            ->withPivot('status') // status can be 'accepted', 'pending', etc.
+            ->withTimestamps();
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id')
+            ->withTimestamps();
     }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 28, 2024 at 10:49 AM
+-- Generation Time: Nov 18, 2024 at 12:44 PM
 -- Server version: 5.7.26-log
 -- PHP Version: 7.4.9
 
@@ -375,6 +375,45 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `followers`
+--
+
+DROP TABLE IF EXISTS `followers`;
+CREATE TABLE IF NOT EXISTS `followers` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `follower_id` bigint(20) UNSIGNED NOT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `followers_user_id_foreign` (`user_id`),
+  KEY `followers_follower_id_foreign` (`follower_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friends`
+--
+
+DROP TABLE IF EXISTS `friends`;
+CREATE TABLE IF NOT EXISTS `friends` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `friend_id` bigint(20) UNSIGNED NOT NULL,
+  `status` enum('pending','accepted') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'pending',
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `friends_user_id_foreign` (`user_id`),
+  KEY `friends_friend_id_foreign` (`friend_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jobs`
 --
 
@@ -566,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -594,7 +633,31 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (55, '2024_08_31_030108_create_media_table', 1),
 (58, '2024_10_10_113350_add_lat_long_radius_to_users_table', 2),
 (59, '2024_10_12_072939_create_preference_category_user_table', 3),
-(62, '2024_10_28_151711_create_amenities_table', 6);
+(62, '2024_10_28_151711_create_amenities_table', 6),
+(63, '2024_11_11_163017_add_full_name_and_date_of_birth_to_users_table', 7),
+(64, '2024_11_11_171418_create_notifications_table', 8),
+(65, '2024_11_18_171301_create_friends_table', 9),
+(66, '2024_11_18_171309_create_followers_table', 9);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` char(36) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
+  `notifiable_type` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
+  `notifiable_id` bigint(20) UNSIGNED NOT NULL,
+  `data` text COLLATE utf8_unicode_ci NOT NULL,
+  `read_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `notifications_notifiable_type_notifiable_id_index` (`notifiable_type`,`notifiable_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -631,7 +694,7 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `personal_access_tokens`
@@ -647,7 +710,9 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (8, 'App\\Models\\User', 1, 'authToken', '5d77c82d241b482b15b27626f3aa54d80cc3de23b9a1a840eb87063efc9ca44e', '[\"*\"]', NULL, NULL, '2024-10-10 06:29:38', '2024-10-10 06:29:38'),
 (9, 'App\\Models\\User', 3, 'authToken', 'c7c738882d15d2f4c132d37a19a71f2b24d0a506f2709a8ca4c6e2b1475c991b', '[\"*\"]', NULL, NULL, '2024-10-10 12:12:41', '2024-10-10 12:12:41'),
 (10, 'App\\Models\\User', 1, 'authToken', '3e6668a857ad04d5f4633350737ba6126ac05e741a693b4da6e991ee6150c827', '[\"*\"]', '2024-10-12 02:58:08', NULL, '2024-10-10 12:16:52', '2024-10-12 02:58:08'),
-(11, 'App\\Models\\User', 1, 'authToken', '19a728657008e14785c942cb4005ef909dbc6cdf66a680b87fad62decca47c13', '[\"*\"]', '2024-10-28 10:47:11', NULL, '2024-10-24 07:24:50', '2024-10-28 10:47:11');
+(11, 'App\\Models\\User', 1, 'authToken', '19a728657008e14785c942cb4005ef909dbc6cdf66a680b87fad62decca47c13', '[\"*\"]', '2024-11-18 12:27:14', NULL, '2024-10-24 07:24:50', '2024-11-18 12:27:14'),
+(12, 'App\\Models\\User', 4, 'authToken', 'd8ad7891c300b78867d3f03b069ab0b6b8a06f6d1d599255fca58b7b03f86f4c', '[\"*\"]', NULL, NULL, '2024-11-18 12:29:22', '2024-11-18 12:29:22'),
+(13, 'App\\Models\\User', 4, 'authToken', 'f7816bb7b2545df14838b45161458e8b27d41e79446751e6f0b334f92be22d1d', '[\"*\"]', '2024-11-18 12:43:58', NULL, '2024-11-18 12:30:11', '2024-11-18 12:43:58');
 
 -- --------------------------------------------------------
 
@@ -822,6 +887,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `phone_number` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
   `address` text COLLATE utf8_unicode_ci,
+  `date_of_birth` date DEFAULT NULL,
   `restaurant_id` bigint(20) UNSIGNED DEFAULT NULL,
   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0: inactive, 1: active',
@@ -840,16 +906,17 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_phone_number_unique` (`phone_number`),
   UNIQUE KEY `users_username_unique` (`username`),
   KEY `users_restaurant_id_foreign` (`restaurant_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `username`, `email`, `email_verified_at`, `phone_number`, `password`, `address`, `restaurant_id`, `remember_token`, `active`, `lat`, `long`, `radius`, `sms_code`, `sms_code_expired_at`, `email_code`, `email_code_expired_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 'customer', 'customer', 'customer@example.com', '2024-08-30 22:05:26', '1234567890', '$2y$12$06YvBBrQS8e9w.ON0CPFQueFc2aHqyENrLN6rcxMvwUbSF7BhyZxy', NULL, NULL, '7DVWbmm3LE', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-08-30 22:05:27', '2024-10-10 12:16:44'),
-(2, 'John Doe', 'johndoe', 'johndoe@example.com', NULL, '1534567890', '$2y$12$0ZF/eWILyXfLFZjATEWAGeGJdmIkxwq6/hrDiowWm2XeOdFappip2', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-08-30 22:21:40', '2024-08-30 22:21:40'),
-(3, 'John Doe', 'johndoee', 'johndoee@example.com', NULL, '1534567810', '$2y$12$06R6VPvzXh4lVTNDkuIxJeZOcIIML4maOEOMG8E5iDPVmfyfSWBPa', '123 Main Street, Springfield, USA', NULL, NULL, 1, '232', '232', '2', NULL, NULL, NULL, NULL, NULL, '2024-10-10 12:12:41', '2024-10-10 12:12:41');
+INSERT INTO `users` (`id`, `name`, `username`, `email`, `email_verified_at`, `phone_number`, `password`, `address`, `date_of_birth`, `restaurant_id`, `remember_token`, `active`, `lat`, `long`, `radius`, `sms_code`, `sms_code_expired_at`, `email_code`, `email_code_expired_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 'John Doe', 'customer', 'john.doe@example.com', '2024-08-30 22:05:26', '+1234567890', '$2y$12$06YvBBrQS8e9w.ON0CPFQueFc2aHqyENrLN6rcxMvwUbSF7BhyZxy', '123 Main Street, Springfield', '1990-05-15', NULL, '7DVWbmm3LE', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-08-30 22:05:27', '2024-11-11 12:11:39'),
+(2, 'John Doe', 'johndoe', 'johndoe@example.com', NULL, '1534567890', '$2y$12$0ZF/eWILyXfLFZjATEWAGeGJdmIkxwq6/hrDiowWm2XeOdFappip2', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-08-30 22:21:40', '2024-08-30 22:21:40'),
+(3, 'John Doe', 'johndoee', 'johndoee@example.com', NULL, '1534567810', '$2y$12$06R6VPvzXh4lVTNDkuIxJeZOcIIML4maOEOMG8E5iDPVmfyfSWBPa', '123 Main Street, Springfield, USA', NULL, NULL, NULL, 1, '232', '232', '2', NULL, NULL, NULL, NULL, NULL, '2024-10-10 12:12:41', '2024-10-10 12:12:41'),
+(4, 'John Doe', 'john3doee', 'johndo3ee@example.com', NULL, '1234567810', '$2y$12$QKJkR3CyrtAMnQvcYYlqmOTWGiDUsfnvZI/m0nxpR8OUcZr65sPva', '123 Main Street, Springfield, USA', NULL, NULL, NULL, 1, '232', '232', '2', NULL, NULL, NULL, NULL, NULL, '2024-11-18 12:29:22', '2024-11-18 12:29:22');
 
 -- --------------------------------------------------------
 

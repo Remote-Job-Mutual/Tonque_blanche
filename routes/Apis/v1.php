@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Apis\V1;
 
-
+use App\Http\Controllers\Api\V1\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,10 +53,20 @@ Route::prefix('v1')->group(function () {
                     Route::post('/', [UserPreferenceController::class, 'savePreferences'])->name('api.preferences.save');
                 });
 
-                // Customer Profile Routes
-                Route::get('profile', [AuthenticationController::class, 'profile'])->name('api.v1.customer.profile');
-                Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api.v1.customer.update-password');
+                // Notification
+                Route::prefix('notifications')->group(function () {
+                    Route::get('/', [NotificationController::class, 'index'])->name('api.v1.customer.notifications.index');
+                    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('api.v1.customer.notifications.markAllRead');
+                    Route::post('/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('api.v1.customer.notifications.markAsRead');
+                });
 
+
+                // Personal info routes
+                Route::prefix('profile')->group(function () {
+                    Route::get('/', [AuthenticationController::class, 'profile'])->name('api.v1.customer.profile');
+                    Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api.v1.customer.update-password');
+                    Route::put('update', [AuthenticationController::class, 'update'])->name('api.v1.user.personal-info.update');
+                });
 
                 // Dish-related Routes
                 Route::prefix('dishes')->group(function () {
@@ -72,6 +82,19 @@ Route::prefix('v1')->group(function () {
                     // Post a review
                     Route::post('/{restaurantId}/review', [UserRestaurantInteractionController::class, 'store'])
                         ->name('api.v1.restaurants.review.store');
+                });
+
+
+
+                Route::prefix('friends')->group(function () {
+                    Route::post('send-request', [FriendController::class, 'sendFriendRequest'])->name('api.v1.friends.send-request');
+                    Route::post('accept-request', [FriendController::class, 'acceptFriendRequest'])->name('api.v1.friends.accept-request');
+                    Route::post('unfriend', [FriendController::class, 'unfriendUser'])->name('api.v1.friends.unfriend');
+                });
+
+                Route::prefix('follow')->group(function () {
+                    Route::post('follow', [FriendController::class, 'followUser'])->name('api.v1.follow.follow-user');
+                    Route::post('unfollow', [FriendController::class, 'unfollowUser'])->name('api.v1.follow.unfollow-user');
                 });
             });
         });
