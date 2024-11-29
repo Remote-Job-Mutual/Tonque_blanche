@@ -26,7 +26,7 @@ class UpdateUserInfoRequest extends FormRequest
             'email' => 'sometimes|email|max:255',
             'date_of_birth' => 'sometimes|date',
             'address' => 'sometimes|string|max:255',
-            'phone_number' => 'sometimes|string|max:15',
+            'phone_number' => 'sometimes|string|max:15|unique:users,phone_number,' . auth()->user()->id . ',id',
         ];
     }
 
