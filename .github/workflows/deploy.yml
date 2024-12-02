@@ -1,0 +1,34 @@
+name: Deploy to cPanel via FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: Install dependencies
+      #   run: |
+      #     composer install --no-dev --prefer-dist --optimize-autoloader --ignore-platform-reqs
+      #     npm install
+      #     npm run production
+
+      - name: Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./ # Adjust as necessary
+          server-dir: ${{ secrets.FTP_PATH }}
+          state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/vendor/**
+            **/node_modules/**
+            .env
+            **/.git/**
