@@ -65,7 +65,7 @@ Route::prefix('v1')->group(function () {
                 Route::prefix('profile')->group(function () {
                     Route::get('/', [AuthenticationController::class, 'profile'])->name('api.v1.customer.profile');
                     Route::post('update-password', [AuthenticationController::class, 'updatePassword'])->name('api.v1.customer.update-password');
-                    Route::put('update', [AuthenticationController::class, 'update'])->name('api.v1.user.personal-info.update');
+                    Route::post('update', [AuthenticationController::class, 'update'])->name('api.v1.user.personal-info.update');
                 });
 
                 // Dish-related Routes

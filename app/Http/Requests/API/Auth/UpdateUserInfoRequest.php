@@ -27,6 +27,7 @@ class UpdateUserInfoRequest extends FormRequest
             'date_of_birth' => 'sometimes|date',
             'address' => 'sometimes|string|max:255',
             'phone_number' => 'sometimes|string|max:15|unique:users,phone_number,' . auth()->user()->id . ',id',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

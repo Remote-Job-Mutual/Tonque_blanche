@@ -106,8 +106,8 @@ class AuthenticationController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        // $user->avatar_url = $user?->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
-        // unset($user->media);
+        $user->avatar_url = $user?->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
+        unset($user->media);
         return ResponseHelper::success(['user' => $user], 'User Profile');
     }
 
@@ -133,6 +133,16 @@ class AuthenticationController extends Controller
     {
         $user = Auth::user();
         $user->update($request->validated());
+
+        if ($request->hasFile('avatar')) {
+            $user->clearMediaCollection('PROFILE_PICTURE'); // Clear old avatar
+            $user->addMediaFromRequest('avatar')->toMediaCollection('PROFILE_PICTURE'); // Add new avatar
+        }
+    
+        // Refresh user data with updated media URL
+        $user->avatar_url = $user->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
+        unset($user->media);
+
         return ResponseHelper::success(['user' => $user], 'User information updated successfully');
     }
 
