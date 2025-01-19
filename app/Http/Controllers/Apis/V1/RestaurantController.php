@@ -17,6 +17,18 @@ class RestaurantController extends Controller
         $this->restaurantService = $restaurantService;
     }
 
+
+    // Show Details of a Restaurant
+    public function details($locale, $restaurantId)
+    {
+        $restaurant = Restaurant::with('dishes', 'services', 'amenities')->find($restaurantId);
+        if (!$restaurant) {
+            return ResponseHelper::error('Restaurant not found');
+        }
+        return ResponseHelper::success([
+            'restaurant' => $this->restaurantService->formatRestaurant($restaurant)
+        ]);
+    }
     /**
      * List all restaurants.
      */

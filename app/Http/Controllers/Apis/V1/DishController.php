@@ -19,6 +19,17 @@ class DishController extends Controller
         $this->dishService = $dishService;
     }
 
+
+    public function details($local, $id)
+    {
+        $dish = Dish::with('restaurant')->find($id);
+        if (!$dish) {
+            return ResponseHelper::error('Dish not found');
+        }
+        return ResponseHelper::success([
+            'dish' => $this->dishService->formatSingleDish($dish)
+        ]);
+    }
     /**
      * Get suggested dishes based on the user's preferences.
      */

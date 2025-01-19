@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Apis\V1;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ class NotificationController extends Controller
     // Fetch all notifications for the authenticated user
     public function index()
     {
-        $notifications = Auth::user()->notifications()->orderBy('created_at', 'desc')->paginate(10);
+        $notifications = Auth::user()->notifications()->orderBy('created_at', 'desc')->paginate(10, ['*'], 'notifications');
         return ResponseHelper::success([
             'notifications' => $notifications,
         ]);

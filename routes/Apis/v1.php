@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Apis\V1;
 
-use App\Http\Controllers\Api\V1\NotificationController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +74,7 @@ Route::prefix('v1')->group(function () {
                     Route::get('new-dishes', [DishController::class, 'newDishes'])->name('api.v1.customer.dishes.new-dishes');
                     Route::get('nearby-dishes', [DishController::class, 'nearbyDishes'])->name('api.v1.customer.dishes.nearby-dishes');
                     Route::get('rated-by-friends', [DishController::class, 'ratedByFriends'])->name('api.v1.customer.dishes.rated-by-friends');
+                    Route::get('details/{dishId}', [DishController::class, 'details'])->name('api.v1.customer.dishes.details');
                 });
 
                 Route::prefix('restaurants')->group(function () {
@@ -82,6 +83,10 @@ Route::prefix('v1')->group(function () {
                     // Post a review
                     Route::post('/{restaurantId}/review', [UserRestaurantInteractionController::class, 'store'])
                         ->name('api.v1.restaurants.review.store');
+
+                    //Restaurant Details
+                    Route::get('details/{restaurantId}', [RestaurantController::class, 'details'])
+                        ->name('api.v1.restaurants.details');
                 });
 
 
