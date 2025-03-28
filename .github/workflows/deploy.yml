@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./ # Adjust as necessary
-          server-dir: /home/nebosha1/app.nebosh-azurewebsites.com/  # Updated path
+          server-dir: /  # Updated path
           state-name: .ftp-deploy-sync-state.json
           exclude: |
             **/vendor/**
