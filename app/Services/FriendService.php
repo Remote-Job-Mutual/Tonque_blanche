@@ -11,21 +11,24 @@ class FriendService
      */
     public function mapFriendDetails(User $currentUser, User $friend)
     {
+        $privacySettings = $friend->privacySettings;
+        
         $isFriend = $currentUser->friends()->where('friend_id', $friend->id)->wherePivot('status', 'accepted')->exists();
-        $canViewFavorites = $friend->privacySettings->show_favorites_to_followers || $isFriend;
-        $canViewRatings = $friend->privacySettings->show_ratings_to_followers || $isFriend;
+        $canViewFavorites = $privacySettings ? ($privacySettings->show_favorites_to_followers || $isFriend) : $isFriend;
+        $canViewRatings = $privacySettings ? ($privacySettings->show_ratings_to_followers || $isFriend) : $isFriend;
 
         return [
             'id' => $friend->id,
             'name' => $friend->name,
             'username' => $friend->username,
-            'profile_picture' => $friend->profile_picture ?? null, // Include other relevant user data
+            'profile_picture' => $friend->profile_picture ?? null,
             'can_view_favorites' => $canViewFavorites,
             'can_view_ratings' => $canViewRatings,
             'favorites' => $canViewFavorites ? $friend->favoriteDishes : null,
             'ratings' => $canViewRatings ? $friend->ratedDishes : null,
         ];
     }
+
 
     /**
      * Map the data for a list of users (e.g., friends).
