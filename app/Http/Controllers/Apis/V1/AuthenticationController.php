@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
+use App\Helpers\UserHelper;
 use Illuminate\Routing\Controller;
 use App\Mail\ForgotPasswordOTPEmail;
 use Illuminate\Support\Facades\Auth;
@@ -105,10 +106,9 @@ class AuthenticationController extends Controller
     //Profile API
     public function profile()
     {
-        $user = Auth::user();
-        $user->avatar_url = $user?->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
-        unset($user->media);
-        return ResponseHelper::success(['user' => $user], 'User Profile');
+    
+
+        return ResponseHelper::success(UserHelper::getUserProfile(), 'User Profile');
     }
 
 

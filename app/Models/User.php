@@ -107,8 +107,23 @@ class User extends Authenticatable implements HasMedia
             ->withTimestamps();
     }
 
+    public function pendingFriendRequests()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+            ->wherePivot('status', 'pending')
+            ->withTimestamps();
+            
+    }
+
     public function followers()
     {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    public function followings()
+    {
+
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id')
             ->withTimestamps();
     }
