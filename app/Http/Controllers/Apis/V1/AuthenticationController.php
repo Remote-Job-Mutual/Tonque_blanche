@@ -71,7 +71,7 @@ class AuthenticationController extends Controller
             $accessToken = $user->createToken('authToken')->plainTextToken;
 
             return ResponseHelper::success([
-                'user' => $user->only(['id', 'name', 'email', 'phone_number']),
+                'user' => UserHelper::getUserProfile(),
                 'token' => [
                     'access_token' => $accessToken,
                     'token_type' => 'Bearer',
@@ -91,7 +91,7 @@ class AuthenticationController extends Controller
             $accessToken = $user->createToken('authToken')->plainTextToken;
 
             return ResponseHelper::success([
-                'user' => $user->only(['id', 'name', 'email', 'phone_number']),
+                'user' => UserHelper::getUserProfile(),
                 'token' => [
                     'access_token' => $accessToken,
                     'token_type' => 'Bearer',
@@ -106,7 +106,7 @@ class AuthenticationController extends Controller
     //Profile API
     public function profile()
     {
-    
+
 
         return ResponseHelper::success(UserHelper::getUserProfile(), 'User Profile');
     }
@@ -138,7 +138,7 @@ class AuthenticationController extends Controller
             $user->clearMediaCollection('PROFILE_PICTURE'); // Clear old avatar
             $user->addMediaFromRequest('avatar')->toMediaCollection('PROFILE_PICTURE'); // Add new avatar
         }
-    
+
         // Refresh user data with updated media URL
         $user->avatar_url = $user->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
         unset($user->media);
