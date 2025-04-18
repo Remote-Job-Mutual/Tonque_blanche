@@ -204,4 +204,39 @@ class FriendController extends Controller
 
         return ResponseHelper::success([], 'User unfriended successfully.');
     }
+
+
+    // list of follwings
+    public function followingList(Request $request)
+    {
+        $user = $request->user();
+        $following = $user->followings()->paginate(10);
+        $mappedFollowing = $this->friendService->mapFollowerList($user, $following);
+        return ResponseHelper::success([
+            'following' => $mappedFollowing
+        ], 'Following list retrieved successfully.');
+    }
+
+    // remove following
+    public function removefollowing()
+    {
+        $user = Auth::user();
+
+        // Validate the request
+        $validatedData = request()->validate([
+            'followed_user_id' => ['required', 'integer', 'exists:users,id']
+        ]);
+
+        $followedUserId = $validatedData['followed_user_id'];
+
+        // Check if the user is following the specified user
+        if (!$user->followings()->where('follower_id', $followedUserId)->exists()) {
+            return ResponseHelper::error('user are not following you.', 400);
+        }
+
+        // Detach the user from the followers list
+        $user->followings()->detach($followedUserId);
+
+        return ResponseHelper::success([], 'User following remove successfully.');
+    }
 }

@@ -106,6 +106,12 @@ Route::prefix('v1')->group(function () {
                     Route::post('follow', [FriendController::class, 'followUser'])->name('api.v1.follow.follow-user');
                     Route::post('unfollow', [FriendController::class, 'unfollowUser'])->name('api.v1.follow.unfollow-user');
                 });
+
+
+                Route::prefix('following')->group(function () {
+                    Route::get('/following-list', [FriendController::class, 'followingList'])->name('api.v1.following.following-list');
+                    Route::post('remove-following', [FriendController::class, 'removefollowing'])->name('api.v1.following.remove-following');
+                });
             });
         });
     });
