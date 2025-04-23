@@ -206,6 +206,34 @@ class FriendController extends Controller
     }
 
 
+    /**
+     * Unfriend a user.
+     */
+    public function cancelFriendRequest(Request $request)
+    {
+        $user = $request->user();
+
+        // Validate the request
+        $validatedData = $request->validate([
+            'friend_id' => ['required', 'integer', 'exists:users,id']
+        ]);
+
+        $friendId = $validatedData['friend_id'];
+        $friend = User::find($friendId);
+
+        // Check if the user is friends with the specified user
+        if (!$user->friends()->wherePivot('friend_id', $friendId)->wherePivot('status', 'pending')->exists()) {
+            return ResponseHelper::error('You are not friends with this user.', 400);
+        }
+
+        // Detach the friendship relationship for both users
+        $user->friends()->detach($friendId);
+        $friend->friends()->detach($user->id);
+
+        return ResponseHelper::success([], 'frient request successfully.');
+    }
+
+
     // list of follwings
     public function followingList(Request $request)
     {

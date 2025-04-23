@@ -99,6 +99,7 @@ Route::prefix('v1')->group(function () {
                     Route::post('send-request', [FriendController::class, 'sendFriendRequest'])->name('api.v1.friends.send-request');
                     Route::post('accept-request', [FriendController::class, 'acceptFriendRequest'])->name('api.v1.friends.accept-request');
                     Route::post('unfriend', [FriendController::class, 'unfriendUser'])->name('api.v1.friends.unfriend');
+                    Route::post('cancel-request', [FriendController::class, 'cancelFriendRequest'])->name('api.v1.friends.cancel-request');
                 });
 
                 Route::prefix('follow')->group(function () {
