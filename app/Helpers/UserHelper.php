@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
+
 /**
  * Retrieve user coordinates from the request or authenticated user.
  *
@@ -73,6 +75,48 @@ class UserHelper
                 ]
             ]
             // $friends = $user->friends()->wherePivot('status', 'accepted')->count(),
+
+
+        ];
+    }
+
+
+    public static function getOtherProfile($userId)
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return null;
+        }
+      
+       
+        return [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'avatar' => $user?->getFirstMediaUrl('PROFILE_PICTURE') ?? '',
+            'phone_number' => $user->phone_number,
+            'date_of_birth' => $user->date_of_birth,
+            'address' => $user->address,
+            'phone_number' => $user->phone_number,
+            'creation_date' => $user->created_at->format('d-m-Y'),
+            'friends' => $user->friends()->wherePivot('status', 'accepted')->count(),
+            'followers' => $user->followers()->count(),
+            'following' => $user->followings()->count(),
+
+            'trust_percentage' => [
+                'total' => 80,
+                'tags' => [
+                    'Overall' => 12,
+                ]
+            ],
+            'points' => [
+                'total_points' =>  30,
+                'tags' => [
+                    'Madrid' => 12,
+                    'Overall' => 56,
+                ]
+            ]
+
 
 
         ];

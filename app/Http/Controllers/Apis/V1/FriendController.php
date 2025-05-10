@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\ResponseHelper;
+use App\Helpers\UserHelper;
 use App\Services\FriendService;
 
 class FriendController extends Controller
@@ -19,6 +20,22 @@ class FriendController extends Controller
         $this->friendService = $friendService;
     }
 
+    public function getOtherUser()
+    {
+        $userId = request('user_id');
+
+        if (!$userId) {
+            return ResponseHelper::error('User ID is required.', 400);
+        }
+
+        $userProfile = UserHelper::getOtherProfile($userId);
+
+        if (!$userProfile) {
+            return ResponseHelper::error('User not found.', 404);
+        }
+
+        return ResponseHelper::success($userProfile, 'Profile retrieved successfully.');
+    }
     /**
      * Get a paginated list of friends for the authenticated user with mapped data.
      */

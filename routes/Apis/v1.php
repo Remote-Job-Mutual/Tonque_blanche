@@ -90,7 +90,10 @@ Route::prefix('v1')->group(function () {
                 });
 
 
-
+                Route::prefix('others')->group(function () {
+                    Route::get('profile', [FriendController::class, 'getOtherUser'])->name('api.v1.others.profile');
+                 
+                });
                 Route::prefix('friends')->group(function () {
                     Route::get('/', [FriendController::class, 'friendList'])->name('api.v1.friends.list');
                     Route::get('/suggest', [FriendController::class, 'userList'])->name('api.v1.friends.suggest');

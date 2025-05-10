@@ -139,6 +139,34 @@ class AuthenticationController extends Controller
             $user->addMediaFromRequest('avatar')->toMediaCollection('PROFILE_PICTURE'); // Add new avatar
         }
 
+
+        if ($request->filled('avatar_base64')) {
+            $avatarData = $request->input('avatar_base64');
+        
+            // Match the base64 prefix
+            if (preg_match('/^data:image\/(\w+);base64,/', $avatarData, $type)) {
+                $avatarData = substr($avatarData, strpos($avatarData, ',') + 1);
+                $type = strtolower($type[1]); // jpg, png, etc.
+        
+                // Decode image
+                $avatarData = base64_decode($avatarData);
+        
+                if ($avatarData === false) {
+                    return ResponseHelper::error('Invalid base64 image data.', 422);
+                }
+        
+                // Create temporary file
+                $tempPath = storage_path("app/tmp_avatar.$type");
+                file_put_contents($tempPath, $avatarData);
+        
+                // Clear old and add new avatar
+                $user->clearMediaCollection('PROFILE_PICTURE');
+                $user->addMedia($tempPath)->usingFileName("avatar.$type")->toMediaCollection('PROFILE_PICTURE');
+        
+                // Delete temp file
+                unlink($tempPath);
+            } 
+
         // Refresh user data with updated media URL
         $user->avatar_url = $user->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
         unset($user->media);
