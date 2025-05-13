@@ -171,8 +171,10 @@ class AuthenticationController extends Controller
             $user->avatar_url = $user->getFirstMediaUrl('PROFILE_PICTURE') ?? '';
             unset($user->media);
 
-            return ResponseHelper::success(['user' => $user], 'User information updated successfully');
+          
         }
+
+        return ResponseHelper::success(['user' => $user], 'User information updated successfully');
     }
 
 

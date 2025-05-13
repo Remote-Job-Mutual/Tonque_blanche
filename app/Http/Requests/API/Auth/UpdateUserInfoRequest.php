@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserInfoRequest extends FormRequest
 {
@@ -21,12 +22,24 @@ class UpdateUserInfoRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
         return [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore(auth()->id()),
+            ],
             'date_of_birth' => 'sometimes|date',
             'address' => 'sometimes|string|max:255',
-            'phone_number' => 'sometimes|string|max:15|unique:users,phone_number,' . auth()->user()->id . ',id',
+            // 'phone_number' => 'sometimes|string|max:15|unique:users,phone_number,' . auth()->user()->id . ',id',
+            'phone_number' => [
+                'sometimes',
+                'string',
+                'max:15',
+                Rule::unique('users', 'phone_number')->ignore(auth()->id())
+            ],
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
