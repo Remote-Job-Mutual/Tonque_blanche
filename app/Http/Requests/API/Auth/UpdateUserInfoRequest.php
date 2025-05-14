@@ -40,7 +40,7 @@ class UpdateUserInfoRequest extends FormRequest
                 'max:15',
                 Rule::unique('users', 'phone_number')->ignore(auth()->id())
             ],
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

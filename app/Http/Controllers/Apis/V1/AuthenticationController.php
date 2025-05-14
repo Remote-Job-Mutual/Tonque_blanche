@@ -18,7 +18,7 @@ use App\Http\Requests\API\Auth\LoginOtpRequest;
 use App\Http\Requests\API\Auth\RegisterRequest;
 use App\Http\Requests\API\Auth\ForgetPasswordRequest;
 use App\Http\Requests\API\Auth\UpdatePasswordRequest;
-use App\Http\Requests\Api\Auth\UpdateUserInfoRequest;
+use App\Http\Requests\API\Auth\UpdateUserInfoRequest;
 
 
 
